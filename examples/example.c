@@ -13,8 +13,11 @@ CfgVariable* variables[] = {
   }
 };
 
-int main() {
-  void** results = parse("test.cfg", variables);
+int main(int argc, char** argv) {
+  (void) argc;
+  (void) argv;
+
+  void** results = parse("example.cfg", variables);
   char* address = results[0];
   int* port = results[1];
 
