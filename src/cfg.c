@@ -1,20 +1,34 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 #define MAX_LINE_LENGTH 50
 
-bool parse(const char* filename) {
-  char buffer[50];
+char* format_string(char* string) {
+  char* formatted = "address: %%s";
+  return formatted;
+}
+
+bool parse(const char* filename, char* keywords[]) {
+  char buffer[64];
+  char value[32];
+
   FILE* file = fopen(filename, "r");
+  if (file == NULL)
+    goto error;
 
-  if (file == NULL) return false;
+  if (fgets(buffer, MAX_LINE_LENGTH, file) == NULL)
+    goto error;
 
-  // if (fgets(buffer, MAX_LINE_LENGTH, file) == NULL) return false;
+  if(fscanf(file, "%s", value) == EOF)
+    printf("NOT WORKING\n");
+    goto error;
 
-  if(fscanf(file, "address: %s", buffer) == EOF) printf("NOT WORKING\n");
+  printf("%s\n", value);
 
-  printf("%s\n", buffer);
-
-  fclose(file);
   return true;
+
+error:
+  fclose(file);
+  return false;
 }

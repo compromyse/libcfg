@@ -3,6 +3,6 @@
 
 #include <stdbool.h>
 
-bool parse(char* filename);
+bool parse(char* filename, char* keywords[]);
 
 #endif
