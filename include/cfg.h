@@ -13,6 +13,6 @@ typedef struct {
   VariableType type;
 } CfgVariable;
 
-char** parse(const char* filename, CfgVariable* variables[]);
+void** parse(const char* filename, CfgVariable* variables[]);
 
 #endif

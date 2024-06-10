@@ -9,16 +9,15 @@ CfgVariable* variables[] = {
   },
   &(CfgVariable) {
     "port",
-    STRING
+    INTEGER
   }
 };
 
 int main() {
-  char** results = parse("test.cfg", variables);
+  void** results = parse("test.cfg", variables);
 
-  for (int i = 0; results[i] != NULL; i++) {
-    printf("%s: %s\n", variables[i]->name, results[i]);
-  }
+  printf("%s: %s\n", variables[0]->name, (char*)results[0]);
+  printf("%s: %d\n", variables[1]->name, *(int*)results[1]);
 
   return 0;
 }
