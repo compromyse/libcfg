@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 project(libcfg)
-set(CMAKE_C_FLAGS "-O3 -Wall -Wextra")
+set(CMAKE_C_FLAGS "-O3 -Wall -Wextra -Werror")
 
 add_library(cfg STATIC src/cfg.c)
 
