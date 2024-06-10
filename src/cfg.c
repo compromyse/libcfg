@@ -1,34 +1,41 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-#define MAX_LINE_LENGTH 50
+static char* format_string(char* string) {
+  size_t new_length = strlen(string) + strlen(": %s") + 1;
+  char* formatted = calloc(new_length, sizeof(char));
 
-char* format_string(char* string) {
-  char* formatted = "address: %%s";
+  strcpy(formatted, string);
+  strcat(formatted, ": %s");
+
   return formatted;
 }
 
-bool parse(const char* filename, char* keywords[]) {
-  char buffer[64];
-  char value[32];
+static char* find_value(char* keyword, FILE* file) {
+  char* value = calloc(50, sizeof(char));
+  if (value == NULL)
+    return NULL;
 
+  fseek(file, 0L, SEEK_SET);
+  if(fscanf(file, format_string(keyword), value) == EOF)
+    return NULL;
+  
+  return value;
+}
+
+bool parse(const char* filename, char* keywords[]) {
   FILE* file = fopen(filename, "r");
   if (file == NULL)
     goto error;
 
-  if (fgets(buffer, MAX_LINE_LENGTH, file) == NULL)
-    goto error;
-
-  if(fscanf(file, "%s", value) == EOF)
-    printf("NOT WORKING\n");
-    goto error;
-
-  printf("%s\n", value);
+  printf("%s\n", find_value(keywords[0], file));
 
   return true;
 
 error:
+  printf("Errored\n");
   fclose(file);
   return false;
 }
