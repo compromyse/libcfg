@@ -3,6 +3,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define SIZE_OF_STRING_ARRAY(array) ({ \
+    size_t i; \
+    for (i = 0; array[i] != NULL; i++); \
+    i; \
+})
+
 static char* format_string(char* string) {
   size_t new_length = strlen(string) + strlen(": %s") + 1;
   char* formatted = calloc(new_length, sizeof(char));
@@ -18,24 +24,33 @@ static char* find_value(char* keyword, FILE* file) {
   if (value == NULL)
     return NULL;
 
-  fseek(file, 0L, SEEK_SET);
-  if(fscanf(file, format_string(keyword), value) == EOF)
-    return NULL;
-  
-  return value;
+  char* formatted_keyword = format_string(keyword);
+
+  char* line;
+  size_t len;
+
+  while (getline(&line, &len, file) != -1)
+    if (sscanf(line, formatted_keyword, value) != EOF)
+      return value;
+
+  return NULL;
 }
 
-bool parse(const char* filename, char* keywords[]) {
+char** parse(const char* filename, char* keywords[]) {
+  size_t n_keywords = SIZE_OF_STRING_ARRAY(keywords);
+  char** results = calloc(n_keywords, sizeof(char*));
+
   FILE* file = fopen(filename, "r");
   if (file == NULL)
     goto error;
 
-  printf("%s\n", find_value(keywords[0], file));
+  for (size_t i = 0; i < n_keywords; i++) {
+    results[i] = find_value(keywords[i], file);
+  }
 
-  return true;
+  return results;
 
 error:
-  printf("Errored\n");
   fclose(file);
   return false;
 }
