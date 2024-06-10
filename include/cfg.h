@@ -3,6 +3,16 @@
 
 #include <stdbool.h>
 
-char** parse(const char* filename, char* keywords[]);
+typedef enum {
+  STRING,
+  INTEGER
+} VariableType;
+
+typedef struct {
+  char* name;
+  VariableType type;
+} CfgVariable;
+
+char** parse(const char* filename, CfgVariable* variables[]);
 
 #endif

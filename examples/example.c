@@ -2,13 +2,22 @@
 
 #include "../include/cfg.h"
 
-char* keywords[] = { "address", "port" };
+CfgVariable* variables[] = {
+  &(CfgVariable) {
+    "address",
+    STRING
+  },
+  &(CfgVariable) {
+    "port",
+    STRING
+  }
+};
 
 int main() {
-  char** results = parse("test.cfg", keywords);
+  char** results = parse("test.cfg", variables);
 
   for (int i = 0; results[i] != NULL; i++) {
-    printf("%s: %s\n", keywords[i], results[i]);
+    printf("%s: %s\n", variables[i]->name, results[i]);
   }
 
   return 0;

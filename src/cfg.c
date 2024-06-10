@@ -3,7 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define SIZE_OF_STRING_ARRAY(array) ({ \
+#include "../include/cfg.h"
+
+#define SIZE_OF_NULL_TERMINATED_ARRAY(array) ({ \
     size_t i; \
     for (i = 0; array[i] != NULL; i++); \
     i; \
@@ -36,8 +38,8 @@ static char* find_value(char* keyword, FILE* file) {
   return NULL;
 }
 
-char** parse(const char* filename, char* keywords[]) {
-  size_t n_keywords = SIZE_OF_STRING_ARRAY(keywords);
+char** parse(const char* filename, CfgVariable* variables[]) {
+  size_t n_keywords = SIZE_OF_NULL_TERMINATED_ARRAY(variables);
   char** results = calloc(n_keywords, sizeof(char*));
 
   FILE* file = fopen(filename, "r");
@@ -45,12 +47,11 @@ char** parse(const char* filename, char* keywords[]) {
     goto error;
 
   for (size_t i = 0; i < n_keywords; i++) {
-    results[i] = find_value(keywords[i], file);
+    results[i] = find_value(variables[i]->name, file);
   }
 
   return results;
-
 error:
   fclose(file);
-  return false;
+  return NULL;
 }
