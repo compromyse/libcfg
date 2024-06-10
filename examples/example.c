@@ -15,9 +15,11 @@ CfgVariable* variables[] = {
 
 int main() {
   void** results = parse("test.cfg", variables);
+  char* address = results[0];
+  int* port = results[1];
 
-  printf("%s: %s\n", variables[0]->name, (char*)results[0]);
-  printf("%s: %d\n", variables[1]->name, *(int*)results[1]);
+  printf("address = %s\n", address);
+  printf("port = %d\n", *port);
 
   return 0;
 }

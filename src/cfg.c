@@ -11,43 +11,43 @@
     i; \
 })
 
-#define FORMAT_STRING_LENGTH(string1, string2) ({ \
-  strlen(string) + strlen(string) + 1; \
-})
+#define FORMAT_STRING_LENGTH(string1, string2) ({ strlen(string1) + strlen(string2) + 1; })
 
-static char* format(char* string, char* type_format_specifier) {
-  size_t new_length = FORMAT_STRING_LENGTH(string, type_format_specifier);
+static char* format(CfgVariable* variable) {
+  const char* format_specifier;
+
+  switch (variable->type) {
+    case STRING:
+      format_specifier = " = %s";
+      break;
+    case INTEGER:
+      format_specifier = " = %d";
+      break;
+  }
+
+  size_t new_length = FORMAT_STRING_LENGTH(variable->name, format_specifier);
   char* formatted = calloc(new_length, sizeof(char));
 
-  strcpy(formatted, string);
-  strcat(formatted, type_format_specifier);
+  strcpy(formatted, variable->name);
+  strcat(formatted, format_specifier);
 
   return formatted;
 }
 
-static char* find_string(CfgVariable* variable, FILE* file) {
-  char* value = calloc(50, sizeof(char));
+static void* find(CfgVariable* variable, FILE* file) {
+  void* value;
+  switch (variable->type) {
+    case STRING:
+      value = calloc(64, sizeof(char));
+      break;
+    case INTEGER:
+      value = calloc(64, sizeof(int));
+      break;
+  }
   if (value == NULL)
     return NULL;
 
-  char* formatted_keyword = format(variable->name, ": %s");
-
-  char* line;
-  size_t len;
-
-  while (getline(&line, &len, file) != -1)
-    if (sscanf(line, formatted_keyword, value) != EOF)
-      return value;
-
-  return NULL;
-}
-
-static int* find_integer(CfgVariable* variable, FILE* file) {
-  int* value = calloc(50, sizeof(int));
-  if (value == NULL)
-    return NULL;
-
-  char* formatted_keyword = format(variable->name, ": %d");
+  char* formatted_keyword = format(variable);
 
   char* line;
   size_t len;
@@ -68,14 +68,7 @@ void** parse(const char* filename, CfgVariable* variables[]) {
     goto error;
 
   for (size_t i = 0; i < n_keywords; i++)
-    switch (variables[i]->type) {
-      case STRING:
-        results[i] = find_string(variables[i], file);
-        break;
-      case INTEGER:
-        results[i] = find_integer(variables[i], file);
-        break;
-    }
+    results[i] = find(variables[i], file);
 
   return results;
 
