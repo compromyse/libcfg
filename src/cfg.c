@@ -62,14 +62,14 @@ static void* find(const CfgVariable* variable, FILE* file) {
 }
 
 void** parse(const char* filename, CfgVariable* variables[]) {
-  size_t n_keywords = size_of_null_terminated_array(variables);
-  void** results = calloc(n_keywords, sizeof(char*));
+  size_t n_variables = size_of_null_terminated_array(variables);
+  void** results = calloc(n_variables, sizeof(void*));
 
   FILE* file = fopen(filename, "r");
   if (file == NULL)
-    goto error;
+    return NULL;
 
-  for (size_t i = 0; i < n_keywords; i++)
+  for (size_t i = 0; i < n_variables; i++)
     results[i] = find(variables[i], file);
 
   return results;
