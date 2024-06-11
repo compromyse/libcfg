@@ -5,13 +5,13 @@
 
 #include "../include/cfg.h"
 
-int format_string_length(const char* string1, const char* string2) {
+static int format_string_length(const char* string1, const char* string2) {
   return strlen(string1) + strlen(string2) + 1;
 }
 
-size_t size_of_null_terminated_array(CfgVariable** array) {
-    size_t i;
-    for (i = 0; array[i] != NULL; i++);
+static size_t size_of_null_terminated_array(CfgVariable** array) {
+    size_t i = 0;
+    while(array[i]) i++;
     return i;
 }
 
@@ -72,9 +72,6 @@ void** parse(const char* filename, CfgVariable* variables[]) {
   for (size_t i = 0; i < n_variables; i++)
     results[i] = find(variables[i], file);
 
-  return results;
-
-error:
   fclose(file);
-  return NULL;
+  return results;
 }
