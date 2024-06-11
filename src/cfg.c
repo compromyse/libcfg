@@ -46,17 +46,18 @@ static void* find(const CfgVariable* variable, FILE* file) {
       value = calloc(64, sizeof(int));
       break;
   }
-  if (value == NULL)
-    return NULL;
 
   char* formatted_keyword = format(variable);
 
   char* line;
   size_t len;
 
+  fseek(file, 0L, SEEK_SET);
   while (getline(&line, &len, file) != -1)
-    if (sscanf(line, formatted_keyword, value) != EOF)
+    if (sscanf(line, formatted_keyword, value) != 0)
       return value;
+    else
+      line = NULL;
 
   return NULL;
 }
