@@ -68,7 +68,7 @@ void** parse(const char* filename, CfgVariable* variables[]) {
   if (file == NULL)
     return NULL;
 
-  for (size_t i = 0; i < n_variables; i++)
+  for (size_t i = 0; i < n_variables - 1; i++)
     results[i] = find(variables[i], file);
 
   fclose(file);
