@@ -10,14 +10,17 @@ CfgVariable* variables[] = {
   &(CfgVariable) {
     "port",
     INTEGER
-  }
+  },
+  NULL
 };
 
 int main(int argc, char** argv) {
-  (void) argc;
-  (void) argv;
+  if (argc < 2) {
+    fprintf(stderr, "Usage: %s [config.cfg]\n", argv[0]);
+    return 1;
+  }
 
-  void** results = parse("example.cfg", variables);
+  void** results = parse(argv[1], variables);
 
   char* address = results[0];
   int* port = results[1];
