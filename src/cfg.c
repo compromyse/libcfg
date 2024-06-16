@@ -23,6 +23,8 @@ static char* format(const CfgVariable* variable) {
     case INTEGER:
       format_specifier = " = %d";
       break;
+    default:
+      return NULL;
   }
 
   size_t new_length = FORMAT_STRING_LENGTH(variable->name, format_specifier);
@@ -35,7 +37,7 @@ static char* format(const CfgVariable* variable) {
 }
 
 static void* find(const CfgVariable* variable, FILE* file) {
-  void* value;
+  void* value = NULL;
   switch (variable->type) {
     case STRING:
       value = calloc(64, sizeof(char));
@@ -46,6 +48,8 @@ static void* find(const CfgVariable* variable, FILE* file) {
   }
 
   char* formatted_keyword = format(variable);
+  if (formatted_keyword == NULL)
+    return NULL;
 
   char* line;
   size_t len;
